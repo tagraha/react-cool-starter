@@ -18,9 +18,7 @@ type Props = {
 };
 
 // Export this for unit testing more easily
-export class Home extends PureComponent {
-  props: Props;
-
+export class Home extends PureComponent<Props> {
   static defaultProps: {
     home: {
       readyStatus: 'USERS_INVALID',
@@ -33,7 +31,7 @@ export class Home extends PureComponent {
     this.props.fetchUsersIfNeeded();
   }
 
-  renderUserList = (): Element<any> => {
+  renderUserList = (): Element<'p' | typeof UserList> => {
     const { home } = this.props;
 
     if (!home.readyStatus || home.readyStatus === action.USERS_INVALID ||

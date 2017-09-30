@@ -19,9 +19,7 @@ type Props = {
 };
 
 // Export this for unit testing more easily
-export class UserInfo extends PureComponent {
-  props: Props;
-
+export class UserInfo extends PureComponent<Props> {
   static defaultProps: {
     userInfo: {},
     match: { params: { id: '' } },
@@ -34,7 +32,7 @@ export class UserInfo extends PureComponent {
     fetchUserIfNeeded(params.id);
   }
 
-  renderUserCard = (): Element<any> => {
+  renderUserCard = (): Element<'p' | typeof UserCard> => {
     const { userInfo, match: { params } } = this.props;
     const userInfoById = userInfo[params.id];
 

@@ -6,13 +6,36 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 const BabiliPlugin = require('babili-webpack-plugin');
 
-const { CSSModules, eslint, stylelint, vendor } = require('./config');
-
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isDev = nodeEnv !== 'production';
 
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./WIT.config')).development(isDev);
+
+// Disable CSSModules here
+const CSSModules = true;
+// Disable js lint error terminating here
+const eslint = true;
+// Disable style lint error terminating here
+const stylelint = true;
+// Register vendors here
+const vendor = [
+  'react',
+  'react-dom',
+  'redux',
+  'react-redux',
+  'redux-thunk',
+  'react-hot-loader',
+  'react-router-dom',
+  'history',
+  'react-router-redux',
+  'react-helmet',
+  'axios',
+  'redbox-react',
+  'chalk',
+  'lodash',
+  'babel-polyfill', // Support promise for IE browser (for prod)
+];
 
 // Setting the plugins for development/prodcution
 const getPlugins = () => {
@@ -97,7 +120,7 @@ module.exports = {
   context: path.join(process.cwd()),
   entry: getEntry(),
   output: {
-    path: path.join(process.cwd(), './build/public/assets'),
+    path: path.join(process.cwd(), './public/assets'),
     publicPath: '/assets/',
     // Don't use chunkhash in development it will increase compilation time
     filename: isDev ? '[name].js' : '[name].[chunkhash:8].js',
@@ -196,15 +219,13 @@ module.exports = {
     ],
   },
   plugins: getPlugins(),
-  // Where to resolve our loaders
   resolveLoader: {
-    modules: ['src', 'node_modules'],
+    // Use loaders without the -loader suffix
     moduleExtensions: ['-loader'],
   },
   resolve: {
     modules: ['src', 'node_modules'],
     descriptionFiles: ['package.json'],
-    moduleExtensions: ['-loader'],
     extensions: ['.js', '.jsx', '.json'],
   },
   // Some libraries import Node modules but don't use them in the browser.

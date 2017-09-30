@@ -2,7 +2,7 @@
 
 A simple but feature rich starter boilerplate for creating your own  [universal](https://medium.com/@mjackson/universal-javascript-4761051b7ae9#.mtjf14xy5) app. It built on the top of [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/), [React](https://facebook.github.io/react/), [Redux](https://github.com/reactjs/redux) and [React Router v4](https://reacttraining.com/react-router/). Includes all the hot stuff and modern web development tools such as [Webpack 3](https://webpack.js.org/), [Babel](https://babeljs.io/), [PostCSS](https://github.com/postcss/postcss-loader), [React Hot Loader 3](https://github.com/gaearon/react-hot-loader) and [Redux Devtools Extension](https://github.com/zalmoxisus/redux-devtools-extension). See the [**“Features”**](#features) section for other awesome features you can expect.
 
-I will improve the starter boilerplate continuously and keep all of the technologies on trend. Welcome to join me if you want. Hope you guys love it 😉
+I will maintain the starter boilerplate and keep all of the technologies on trend. Welcome to join me if you want. Hope you guys love it 😉
 
 > 👻 I'm curious what this starter boilerplate helps you guys do anything? Please feel free to [tell me](https://github.com/wellyshen/react-cool-starter/issues/6), let's make some sharing between us.
 
@@ -95,11 +95,9 @@ I use [better-npm-run](https://github.com/benoror/better-npm-run) to manage the 
 `yarn <script>`|Description
 ------------------|-----------
 `start`|Run your app on the development server at `localhost:3000`. HMR will be enabled.
-`start:production`|Bundles the app to `./build` and run it on the production server at `localhost:8080`.
+`start:production`|Bundle files to `./public/assets` and run it on the production server at `localhost:8080`.
 `start:prod`|Run your app on the production server only at `localhost:8080`.
-`build`|Remove the previous client and server bundled stuff and bundle them to `./build`.
-`build:client`|Remove the previous client bundled stuff and bundle it to `./build/public/assets`.
-`build:server`|Remove the previous server bundled stuff and bundle it to `./build`.
+`build`|Remove the previous bundled files and bundle it to `./public/assets`.
 `lint`|Lint all `.js` and `.scss` files.
 `lint:js`|Lint all `.js` files.
 `lint:style`|Lint all `.scss` files.
@@ -107,8 +105,7 @@ I use [better-npm-run](https://github.com/benoror/better-npm-run) to manage the 
 `test`|Run testing once (with code coverage reports).
 `test:watch`|Run testing on every test file change.
 `clean:all`|Remove the client/server bundled stuff and the coverage report.
-`clean:client`|Remove the `./build/public/assets` folder to clean the client bundled stuff.
-`clean:server`|Remove the server bundled stuff from the `./build` folder.
+`clean:build`|Remove the `./public/assets` folder to clean the client bundled files.
 `clean:test`|Remove the `./coverage` folder to clean the code coverage report.
 
 
@@ -118,9 +115,8 @@ Here is the structure of the app, which serves as generally accepted guidelines 
 
 ```
 .
-├── build                             # Webpack bundled files will be placed into it
-│   └── public                        # The Express server static path
-│       └── favicon.ico               # Favicon is placed in the same path with the main HTML page       
+├── public                            # Express server static path/Webpack bundled output
+│   └── favicon.ico                   # Favicon is placed in the same path with the main HTML page       
 ├── src                               # App source code
 │   ├── config                        # App configuration settings
 │   │   ├── default.js                # Default settings
@@ -141,10 +137,8 @@ Here is the structure of the app, which serves as generally accepted guidelines 
 │   ├── flow                          # Flow types, interface, module aliasing definitions
 │   ├── openBrowser                   # Utility for opening Google Chrome
 │   ├── jest                          # Jest CSS modules and assets mocks settings
-│   ├── webpack                       # Webpack configuration settings
-│   │   ├── config.js                 # Configuration for CSS modules, vendor registering
-│   │   ├── webpack.client.babel.js   # Webpack configuration for client
-│   │   ├── webpack.server.babel.js   # Webpack configuration for server
+│   ├── webpack                       # Webpack settings
+│   │   ├── config.babel.js           # Webpack configuration
 │   │   └── WIT.config.js             # Webpack Isomorphic Tools configuration file        
 └── index.js                          # App entry point
 ```
@@ -314,7 +308,7 @@ render() {
 }
 ```
 
-Without CSS modules (you need to turn off CSS modules from `./tools/webpack/config.js`):
+Without CSS modules (you need to turn off CSS modules from `./tools/webpack/config.babel.js`):
 
 ```javascript
 import './styles.scss';
@@ -457,7 +451,7 @@ Note: If you don't want to use Flow, just remove the `/* @flow */` comment and r
 
 ### JavaScript and Style Lint
 
-[JavaScript lint](https://github.com/MoOx/eslint-loader) and [style lint](https://github.com/JaKXz/stylelint-webpack-plugin) are included into webpack compiling for runtime checking. If you don't want them be activated during developing, you can turn off those from `./tools/webpack/config.js` and do the manually checking by `yarn lint`.
+[JavaScript lint](https://github.com/MoOx/eslint-loader) and [style lint](https://github.com/JaKXz/stylelint-webpack-plugin) are included into webpack compiling for runtime checking. If you don't want them be activated during developing, you can turn off those from `./tools/webpack/config.babel.js` and do the manually checking by `yarn lint`.
 
 
 ### Unit Tests
@@ -494,13 +488,11 @@ You can also use [istanbul's ignore hints](https://github.com/gotwarlost/istanbu
 
 ## Troubleshooting
 
-* If you get the the following message during developing, try to run `yarn build:client` to create the necessary `webpack-assets.json` file for enable related assets (e.g. javascript, styles, image etc.) working on universal rendering.
+* If you get the the following message during developing, try to run `yarn build` to create the necessary `webpack-assets.json` file for enable related assets (e.g. javascript, styles, image etc.) working on universal rendering.
 
 > webpack-isomorphic-tools (waiting for the first webpack build to finish)
 
-* If you encounter the checksum error like following, try to restart the server to solve the it. (it's a react universal issue, which usually occurs due to the non-synchronized rendering result between client and server)
-
-> React attempted to use reuse markup in a container but the checksum was invalid. This generally means that you are using server rendering and the markup generated on the server was not what the client was expecting. React injected new markup to compensate which works but you have lost many of the benefits of server rendering. Instead, figure out why the markup being generated is different on the client or server.
+* If you encounter the markup mismatch error, try to restart the server to solve it. (it's a react universal issue, which usually occurs due to the non-synchronized rendering result between client and server)
 
 * If you run the starter through a cloud computing service such as AWS EC2 instance etc. and you encounter an `UnhandledPromiseRejectionWarning` like this [issue](https://github.com/wellyshen/react-cool-starter/issues/76). It might caused by the "openBrowser" tool. You can solve the issue like following.
 
